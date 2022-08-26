@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Init') {
+            steps {
+                checkout([$class: 'GitSCM',
+                          branches: [[name: '*/master']],
+                          extensions: [[$class: 'CloneOption', shallow: true]],
+                          userRemoteConfigs: [[url: 'https://github.com/inuitdev/pingidentity']]])
+            }
+        }
+        stage('Foundation') {
+            steps {
+                sh 'ci_scripts/build_foundation.sh'
+            }
+        }
+    }
+
+}

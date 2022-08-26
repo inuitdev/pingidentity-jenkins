@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'ARTIFACTORY_URL', defaultValue: 'https://inuitio.jfrog.io/artifactory/pingidentity-generic-local', description: 'Artifactory Pro UL')
+    }
+
+    stages {
+        stage('Init') {
+            steps {
+                checkout([$class: 'GitSCM',
+                          branches: [[name: '*/master']],
+                          extensions: [[$class: 'CloneOption', shallow: true]],
+                          userRemoteConfigs: [[url: 'https://github.com/inuitdev/pingidentity']]])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'ci_scripts/build_product.sh --product pingfederate --verbose-build'
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                echo 'Not Implemented'
+            }
+        }
+    }
+}
